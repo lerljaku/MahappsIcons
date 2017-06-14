@@ -4,21 +4,34 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MahapsIconExport"
+        xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:Controls="clr-namespace:MahapsIconExport.Controls"
+        xmlns:Rtrdk="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d" d:DataContext="{d:DesignInstance local:MainWindowViewModel}"
-        Title="Mahapps Icons" Height="650" Width="1050">
+        Title="MAHAPPS ICONS BROWSER" Height="650" Width="1050" WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBox Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=200}" Height="40"
-                 Name="txtBox" Margin="2" FontSize="22" />
-        <!--<ScrollViewer Grid.Row="1" >-->
-        <ItemsControl ItemsSource="{Binding Icons}" Name="ic" Grid.Row="1" 
-                      VirtualizingStackPanel.IsVirtualizing="True" 
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=200}" Height="40"
+                     Name="txtBox" Margin="2" FontSize="22" HorizontalAlignment="Stretch" Rtrdk:TextBoxHelper.ClearTextButton="True"/>
+            <Button Width="50" Height="38" Content="{IconPacks:PackIconMaterial StarCircle, Width=28, Height=28, Spin=False}" Margin="2 0 4 0" 
+                    Command="{Binding Path=FilterFavouriteCommand}" Grid.Column="1" Foreground="{DynamicResource AccentColorBrush}"/>
+        </Grid>
+        
+        <ItemsControl ItemsSource="{Binding Icons}" Grid.Row="1"
+                 VirtualizingStackPanel.IsVirtualizing="True" x:Name="ic"
+                 VirtualizingStackPanel.VirtualizationMode="Recycling"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 ScrollViewer.IsDeferredScrollingEnabled="True">
             <ItemsControl.Template>
                 <ControlTemplate>
                     <ScrollViewer KeyboardNavigation.IsTabStop="True" CanContentScroll="True">
@@ -28,25 +41,39 @@
             </ItemsControl.Template>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" />
+                    <Controls:VirtualizingWrapPanel  CanHorizontallyScroll="False" CanVerticallyScroll="True" ItemHeight="200" ItemWidth="200" Margin="50 0 0 0"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
-                <DataTemplate >
-                    <Grid MinWidth="200" Margin="25 10" Background="{Binding Background}">
+                <DataTemplate>
+                    <Grid Margin="0 0 0 0" Background="{Binding Background}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <ContentControl Content="{Binding IconCanvas}" HorizontalAlignment="Center" />
-                        <TextBox Grid.Row="1" IsReadOnly="true" Text="{Binding IconName, Mode=OneWay}" HorizontalAlignment="Center" BorderThickness="0" Background="Transparent" />
                         <Grid.InputBindings>
                             <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.AddToFavouriteCommand, ElementName=ic}" CommandParameter="{Binding }" />
                         </Grid.InputBindings>
+
+                        <IconPacks:PackIconModern Kind="{Binding Path=IconKind}" Foreground="{Binding Path=Foreground}" Width="50" Height="50" HorizontalAlignment="Center" Margin="10 60 0 0"/>
+                        <IconPacks:PackIconMaterial Kind="{Binding Path=IconKind}" Foreground="{Binding Path=Foreground}" Width="50" Height="50" HorizontalAlignment="Center" Margin="10 60 0 0"/>
+                        <IconPacks:PackIconMaterialLight Kind="{Binding Path=IconKind}" Foreground="{Binding Path=Foreground}" Width="50" Height="50" HorizontalAlignment="Center" Margin="10 60 0 0"/>
+                        <IconPacks:PackIconFontAwesome Kind="{Binding Path=IconKind}" Foreground="{Binding Path=Foreground}" Width="50" Height="50" HorizontalAlignment="Center" Margin="10 60 0 0"/>
+                        <IconPacks:PackIconOcticons Kind="{Binding Path=IconKind}" Foreground="{Binding Path=Foreground}" Width="50" Height="50" HorizontalAlignment="Center" Margin="10 60 0 0"/>
+                        <IconPacks:PackIconEntypo Kind="{Binding Path=IconKind}" Foreground="{Binding Path=Foreground}" Width="50" Height="50" HorizontalAlignment="Center" Margin="10 60 0 0"/>
+                        <IconPacks:PackIconSimpleIcons Kind="{Binding Path=IconKind}" Foreground="{Binding Path=Foreground}" Width="50" Height="50" HorizontalAlignment="Center" Margin="10 60 0 0"/>
+
+
+                        <Button Command="{Binding DataContext.CopyToClipboardCommand, ElementName=ic}" CommandParameter="{Binding }"
+                                Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent">
+                            <IconPacks:PackIconFontAwesome Kind="{x:Static IconPacks:PackIconFontAwesomeKind.Clipboard}" Foreground="{Binding Path=Foreground}" Width="18" Height="18" />
+                        </Button>
+
+                        <TextBox Grid.Row="1" IsReadOnly="true" Text="{Binding Path=IconName, Mode=OneWay}" HorizontalAlignment="Center" 
+                                 BorderThickness="0" Background="Transparent" FontSize="14" Foreground="{Binding Foreground}"/>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <!--</ScrollViewer>-->
     </Grid>
 </Window>

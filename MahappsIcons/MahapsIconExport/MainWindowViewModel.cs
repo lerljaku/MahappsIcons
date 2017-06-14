@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using Caliburn.Micro;
+using MahApps.Metro.IconPacks;
 
 namespace MahapsIconExport
 {
@@ -12,35 +14,56 @@ namespace MahapsIconExport
         private readonly List<IconViewModel> m_allIcons;
         private static readonly string m_favouriteIconsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MahapsIcons");
         private static readonly string m_favouriteIconsPath = Path.Combine(m_favouriteIconsDir, "FavouriteIcons.txt");
-        private readonly IconsResourceDictionary m_dict = new IconsResourceDictionary();
 
         public MainWindowViewModel()
         {
             m_allIcons = new List<IconViewModel>();
-
-            var favouriteIcons = Load();
-
-            foreach (var iconName in m_dict.Keys)
-            {
-                m_allIcons.Add(new IconViewModel(m_dict[iconName], iconName.ToString(), favouriteIcons.Contains(iconName.ToString())));
-            }
-
             AddToFavouriteCommand = new RelayCommand(AddToFavourite);
+            FilterFavouriteCommand = new RelayCommand(FilterFavourite);
+            CopyToClipboardCommand = new RelayCommand(CopyToClipboard);
         }
 
         public ICommand AddToFavouriteCommand { get; }
 
-        private string m_filter;
-        public string Filter
+        public ICommand FilterFavouriteCommand { get; }
+
+        public ICommand CopyToClipboardCommand { get; }
+
+        public BindableCollection<IconViewModel> Icons { get; set; } = new BindableCollection<IconViewModel>();
+
+        private string m_filterText;
+        public string FilterText
         {
-            get { return m_filter; }
+            get => m_filterText;
             set
             {
-                m_filter = value;
+                m_filterText = value;
 
-                NotifyOfPropertyChange(nameof(Filter));
+                NotifyOfPropertyChange(nameof(FilterText));
                 NotifyOfPropertyChange(nameof(Icons));
+                Filter();
             }
+        }
+
+        public void Initialize()
+        {
+            var favouriteIcons = LoadFavourite();
+
+            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconModernKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconModernKind), favouriteIcons.Contains(s.ToString()))));
+            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconMaterialKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconMaterialKind), favouriteIcons.Contains(s.ToString()))));
+            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconMaterialLightKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconMaterialLightKind), favouriteIcons.Contains(s.ToString()))));
+            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconFontAwesomeKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconFontAwesomeKind), favouriteIcons.Contains(s.ToString()))));
+            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconOcticonsKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconOcticonsKind), favouriteIcons.Contains(s.ToString()))));
+            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconEntypoKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconEntypoKind), favouriteIcons.Contains(s.ToString()))));
+            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconSimpleIconsKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconSimpleIconsKind), favouriteIcons.Contains(s.ToString()))));
+
+            Filter();
+        }
+
+        private void Filter()
+        {
+            Icons.Clear();
+            Icons.AddRange(string.IsNullOrEmpty(FilterText) ? m_allIcons : m_allIcons.Where(d => d.IconName.ToLower().Contains(FilterText.ToLower())));
         }
 
         private void AddToFavourite(object parameter)
@@ -48,12 +71,23 @@ namespace MahapsIconExport
             var casted = (IconViewModel)parameter;
             casted.IsFavourite = !casted.IsFavourite;
 
-            var favouriteIcons = m_allIcons.Where(d => d.IsFavourite).Select(d => d.IconName);
+            var favouriteIcons = m_allIcons.Where(d => d.IsFavourite).Select(d => d.IconKind);
 
-            Save(favouriteIcons);
+            Save(favouriteIcons.Select(s => s.ToString()));
         }
 
-        public IEnumerable<IconViewModel> Icons => string.IsNullOrEmpty(Filter) ? m_allIcons : m_allIcons.Where(d => d.IconName.Contains(Filter));
+        private void CopyToClipboard(object parameter)
+        {
+            var casted = (IconViewModel)parameter;
+
+            Clipboard.SetText($"{casted.IconKindName}.{casted.IconName}");
+        }
+
+        private void FilterFavourite()
+        {
+            Icons.Clear();
+            Icons.AddRange(m_allIcons.Where(w => w.IsFavourite));
+        }
 
         private static void Save(IEnumerable<string> iconNames)
         {
@@ -63,7 +97,7 @@ namespace MahapsIconExport
             File.WriteAllLines(m_favouriteIconsPath, iconNames);
         }
 
-        private static IList<string> Load()
+        private static IList<string> LoadFavourite()
         {
             if(!File.Exists(m_favouriteIconsPath))
                 return new List<string>();
