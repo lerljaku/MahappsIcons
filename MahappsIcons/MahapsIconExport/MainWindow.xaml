@@ -23,7 +23,8 @@
             <TextBox Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=200}" Height="40"
                      Name="txtBox" Margin="2" FontSize="22" HorizontalAlignment="Stretch" Rtrdk:TextBoxHelper.ClearTextButton="True"/>
             <Button Width="50" Height="38" Content="{IconPacks:PackIconMaterial StarCircle, Width=28, Height=28, Spin=False}" Margin="2 0 4 0" 
-                    Command="{Binding Path=FilterFavouriteCommand}" Grid.Column="1" Foreground="{DynamicResource AccentColorBrush}"/>
+                    Command="{Binding Path=FilterFavouriteCommand}" Grid.Column="1" Foreground="{DynamicResource AccentColorBrush}"
+                    ToolTip="Filter only favourite icons"/>
         </Grid>
         
         <ItemsControl ItemsSource="{Binding Icons}" Grid.Row="1"
@@ -66,7 +67,8 @@
 
                         <Button Command="{Binding DataContext.CopyToClipboardCommand, ElementName=ic}" CommandParameter="{Binding }"
                                 Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent">
-                            <IconPacks:PackIconFontAwesome Kind="{x:Static IconPacks:PackIconFontAwesomeKind.Clipboard}" Foreground="{Binding Path=Foreground}" Width="18" Height="18" />
+                            <IconPacks:PackIconFontAwesome Kind="{x:Static IconPacks:PackIconFontAwesomeKind.Clipboard}" 
+                                                           Foreground="{Binding Path=Foreground}" Width="18" Height="18" />
                         </Button>
 
                         <TextBox Grid.Row="1" IsReadOnly="true" Text="{Binding Path=IconName, Mode=OneWay}" HorizontalAlignment="Center" 

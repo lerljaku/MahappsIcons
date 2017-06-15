@@ -49,13 +49,17 @@ namespace MahapsIconExport
         {
             var favouriteIcons = LoadFavourite();
 
-            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconModernKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconModernKind), favouriteIcons.Contains(s.ToString()))));
-            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconMaterialKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconMaterialKind), favouriteIcons.Contains(s.ToString()))));
-            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconMaterialLightKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconMaterialLightKind), favouriteIcons.Contains(s.ToString()))));
-            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconFontAwesomeKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconFontAwesomeKind), favouriteIcons.Contains(s.ToString()))));
-            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconOcticonsKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconOcticonsKind), favouriteIcons.Contains(s.ToString()))));
-            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconEntypoKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconEntypoKind), favouriteIcons.Contains(s.ToString()))));
-            m_allIcons.AddRange(Enum.GetValues(typeof(PackIconSimpleIconsKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconSimpleIconsKind), favouriteIcons.Contains(s.ToString()))));
+            List<IconViewModel> allIcons = new List<IconViewModel>();
+            allIcons.AddRange(Enum.GetValues(typeof(PackIconModernKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconModernKind), favouriteIcons.Contains(s.ToString()))));
+            allIcons.AddRange(Enum.GetValues(typeof(PackIconMaterialKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconMaterialKind), favouriteIcons.Contains(s.ToString()))));
+            allIcons.AddRange(Enum.GetValues(typeof(PackIconMaterialLightKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconMaterialLightKind), favouriteIcons.Contains(s.ToString()))));
+            allIcons.AddRange(Enum.GetValues(typeof(PackIconFontAwesomeKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconFontAwesomeKind), favouriteIcons.Contains(s.ToString()))));
+            allIcons.AddRange(Enum.GetValues(typeof(PackIconOcticonsKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconOcticonsKind), favouriteIcons.Contains(s.ToString()))));
+            allIcons.AddRange(Enum.GetValues(typeof(PackIconEntypoKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconEntypoKind), favouriteIcons.Contains(s.ToString()))));
+            allIcons.AddRange(Enum.GetValues(typeof(PackIconSimpleIconsKind)).Cast<Enum>().Select(s => new IconViewModel(s, nameof(PackIconSimpleIconsKind), favouriteIcons.Contains(s.ToString()))));
+
+            m_allIcons.Clear();
+            m_allIcons.AddRange(allIcons.OrderBy(o => o.IconName));
 
             Filter();
         }
