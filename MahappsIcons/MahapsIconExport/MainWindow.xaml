@@ -7,8 +7,9 @@
         xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:Controls="clr-namespace:MahapsIconExport.Controls"
         xmlns:Rtrdk="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:ViewModels="clr-namespace:MahapsIconExport.ViewModels"
         mc:Ignorable="d" d:DataContext="{d:DesignInstance local:MainWindowViewModel}"
-        Title="MAHAPPS ICONS BROWSER" WindowState="Maximized">
+        Title="MAHAPPS ICONS BROWSER" WindowState="Maximized" x:Name="root">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -54,6 +55,7 @@
                         </Grid.RowDefinitions>
                         <Grid.InputBindings>
                             <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.AddToFavouriteCommand, ElementName=ic}" CommandParameter="{Binding }" />
+                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataContext.ShowAdvancedIconCommand, ElementName=ic}" CommandParameter="{Binding }" />
                         </Grid.InputBindings>
 
                         <IconPacks:PackIconModern Kind="{Binding Path=IconKind}" Foreground="{Binding Path=Foreground}" Width="50" Height="50" HorizontalAlignment="Center" Margin="10 60 0 0"/>
@@ -65,11 +67,19 @@
                         <IconPacks:PackIconSimpleIcons Kind="{Binding Path=IconKind}" Foreground="{Binding Path=Foreground}" Width="50" Height="50" HorizontalAlignment="Center" Margin="10 60 0 0"/>
 
 
-                        <Button Command="{Binding DataContext.CopyToClipboardCommand, ElementName=ic}" CommandParameter="{Binding }"
-                                Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent">
-                            <IconPacks:PackIconFontAwesome Kind="{x:Static IconPacks:PackIconFontAwesomeKind.Clipboard}" 
-                                                           Foreground="{Binding Path=Foreground}" Width="18" Height="18" />
-                        </Button>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Command="{Binding DataContext.CopyToClipboardCommand, ElementName=ic}" CommandParameter="{Binding}"
+                                    Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent">
+                                <IconPacks:PackIconFontAwesome Kind="{x:Static IconPacks:PackIconFontAwesomeKind.Clipboard}" 
+                                                               Foreground="{Binding Path=Foreground}" Width="18" Height="18" />
+                            </Button>
+                            
+                            <Button Command="{Binding DataContext.ShowAdvancedIconCommand, ElementName=ic}" CommandParameter="{Binding}"
+                                    Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent">
+                                <IconPacks:PackIconOcticons Kind="{x:Static IconPacks:PackIconOcticonsKind.LinkExternal}" 
+                                                            Foreground="{Binding Path=Foreground}" Width="18" Height="18" />
+                            </Button>
+                        </StackPanel>
 
                         <TextBox Grid.Row="1" IsReadOnly="true" Text="{Binding Path=IconName, Mode=OneWay}" HorizontalAlignment="Center" 
                                  BorderThickness="0" Background="Transparent" FontSize="14" Foreground="{Binding Foreground}"/>
@@ -77,5 +87,22 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+
+        <Popup IsOpen="{Binding Path=AdvancedIconOpened}" 
+               HorizontalAlignment="Center" 
+               VerticalAlignment="Center"
+               Grid.Row="1"
+               Grid.Column="0"
+               Placement="Center"
+               StaysOpen="False"
+               AllowsTransparency="True">
+            <Border Background="{DynamicResource WindowBackgroundBrush}"
+                    MinWidth="200" 
+                    MinHeight="200"
+                    BorderThickness="2"
+                    BorderBrush="{DynamicResource AccentColorBrush}">
+                <ViewModels:AdvancedIconView DataContext="{Binding Path=AdvancedIconViewModel}"/>
+            </Border>
+        </Popup>
     </Grid>
 </Rtrdk:MetroWindow>

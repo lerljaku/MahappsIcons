@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="MahapsIconExport.ViewModels.AdvancedIconView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MahapsIconExport.ViewModels"
+             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" 
+             d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance local:AdvancedIconViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <IconPacks:PackIconModern Kind="{Binding Path=IconKind}" Foreground="{DynamicResource AccentColorBrush}" Width="{Binding Path=IconWidth}" Height="{Binding Path=IconHeight}" HorizontalAlignment="Center" Margin="20"/>
+        <IconPacks:PackIconMaterial Kind="{Binding Path=IconKind}" Foreground="{DynamicResource AccentColorBrush}" Width="{Binding Path=IconWidth}" Height="{Binding Path=IconHeight}" HorizontalAlignment="Center" Margin="20"/>
+        <IconPacks:PackIconMaterialLight Kind="{Binding Path=IconKind}" Foreground="{DynamicResource AccentColorBrush}" Width="{Binding Path=IconWidth}" Height="{Binding Path=IconHeight}" HorizontalAlignment="Center" Margin="20"/>
+        <IconPacks:PackIconFontAwesome Kind="{Binding Path=IconKind}" Foreground="{DynamicResource AccentColorBrush}" Width="{Binding Path=IconWidth}" Height="{Binding Path=IconHeight}" HorizontalAlignment="Center" Margin="20"/>
+        <IconPacks:PackIconOcticons Kind="{Binding Path=IconKind}" Foreground="{DynamicResource AccentColorBrush}" Width="{Binding Path=IconWidth}" Height="{Binding Path=IconHeight}" HorizontalAlignment="Center" Margin="20"/>
+        <IconPacks:PackIconEntypo Kind="{Binding Path=IconKind}" Foreground="{DynamicResource AccentColorBrush}" Width="{Binding Path=IconWidth}" Height="{Binding Path=IconHeight}" HorizontalAlignment="Center" Margin="20"/>
+        <IconPacks:PackIconSimpleIcons Kind="{Binding Path=IconKind}" Foreground="{DynamicResource AccentColorBrush}" Width="{Binding Path=IconWidth}" Height="{Binding Path=IconHeight}" HorizontalAlignment="Center" Margin="20"/>
+    
+        <StackPanel Orientation="Horizontal" 
+                    Grid.Row="1"
+                    Margin="0 0 0 10">
+            <Label Content="Width:"/>
+            <TextBox Text="{Binding Path=IconWidth, UpdateSourceTrigger=PropertyChanged}"
+                     MinWidth="45"/>
+            <Label Content="Height:"
+                   Margin="5 0 0 0"/>
+            <TextBox Text="{Binding Path=IconHeight, UpdateSourceTrigger=PropertyChanged}"
+                     MinWidth="45"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

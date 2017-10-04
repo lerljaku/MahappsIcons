@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Caliburn.Micro;
+using MahapsIconExport.ViewModels;
 using MahApps.Metro.IconPacks;
 
 namespace MahapsIconExport
@@ -21,6 +22,7 @@ namespace MahapsIconExport
             AddToFavouriteCommand = new RelayCommand(AddToFavourite);
             FilterFavouriteCommand = new RelayCommand(FilterFavourite);
             CopyToClipboardCommand = new RelayCommand(CopyToClipboard);
+            ShowAdvancedIconCommand = new RelayCommand(ShowAdvancedIcon);
         }
 
         public ICommand AddToFavouriteCommand { get; }
@@ -29,7 +31,30 @@ namespace MahapsIconExport
 
         public ICommand CopyToClipboardCommand { get; }
 
-        public BindableCollection<IconViewModel> Icons { get; set; } = new BindableCollection<IconViewModel>();
+        public ICommand ShowAdvancedIconCommand { get; }
+
+        private AdvancedIconViewModel m_advancedIconViewModel;
+
+        public AdvancedIconViewModel AdvancedIconViewModel
+        {
+            get => m_advancedIconViewModel;
+            set
+            {
+                m_advancedIconViewModel = value; 
+                NotifyOfPropertyChange();
+            }
+        }
+
+        private bool m_advancedIconOpened;
+        public bool AdvancedIconOpened
+        {
+            get => m_advancedIconOpened;
+            set
+            {
+                m_advancedIconOpened = value;
+                NotifyOfPropertyChange();
+            }
+        }
 
         private string m_filterText;
         public string FilterText
@@ -44,6 +69,8 @@ namespace MahapsIconExport
                 Filter();
             }
         }
+
+        public BindableCollection<IconViewModel> Icons { get; set; } = new BindableCollection<IconViewModel>();
 
         public void Initialize()
         {
@@ -91,6 +118,17 @@ namespace MahapsIconExport
         {
             Icons.Clear();
             Icons.AddRange(m_allIcons.Where(w => w.IsFavourite));
+        }
+
+        private void ShowAdvancedIcon(object parameter)
+        {
+            var casted = (IconViewModel)parameter;
+
+            if(casted == null) return;
+
+            AdvancedIconViewModel = new AdvancedIconViewModel(casted.IconKind);
+
+            AdvancedIconOpened = true;
         }
 
         private static void Save(IEnumerable<string> iconNames)
